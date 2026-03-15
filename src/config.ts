@@ -27,8 +27,8 @@ export const config = {
     },
   ],
   meeting: {
-    schedule: "recurring every Fri 20:30 KSA",
-    scheduleAr: "متكررة كل جمعة ٢٠:٣٠ بتوقيت السعودية",
+    schedule: "Weekly",
+    scheduleAr: "أسبوعي",
   },
   manifesto: [
     { id: "01", tag: "#build" },

@@ -31,20 +31,120 @@ import { getTranslation } from "@/i18n";
   </div>
 </header>
 
-<!-- Global Meeting Badge -->
+<!-- Global Meeting Badge with Calendar Dropdown -->
 <section class="px-6 max-w-4xl mx-auto mb-12 flex justify-center">
-  <div class="inline-flex items-center gap-3 text-xs text-[#3fb950] border border-[#3fb950]/30 bg-[#3fb950]/5 px-5 py-2.5">
-    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-    <span class="uppercase tracking-widest font-bold">
-      <span class="lang-ar">{getTranslation("ar", "meeting.label")}</span>
-      <span class="lang-en">{getTranslation("en", "meeting.label")}</span>
-    </span>
-    <span class="text-[#8b949e]">
-      <span class="lang-ar">— {config.meeting.scheduleAr}</span>
-      <span class="lang-en">— {config.meeting.schedule}</span>
-    </span>
+  <div class="relative" id="calendar-dropdown-wrapper">
+    <button
+      id="calendar-badge"
+      type="button"
+      class="inline-flex items-center gap-3 text-xs text-[#3fb950] border border-[#3fb950]/30 bg-[#3fb950]/5 px-5 py-2.5 cursor-pointer hover:bg-[#3fb950]/10 transition-colors"
+      aria-expanded="false"
+      aria-haspopup="true"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      <span class="uppercase tracking-widest font-bold">
+        <span class="lang-ar">{getTranslation("ar", "meeting.label")}</span>
+        <span class="lang-en">{getTranslation("en", "meeting.label")}</span>
+      </span>
+      <span class="text-[#8b949e]">
+        <span class="lang-ar">— {config.meeting.scheduleAr}</span>
+        <span class="lang-en">— {config.meeting.schedule}</span>
+      </span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-60"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><line x1="12" y1="14" x2="12" y2="18"></line><line x1="10" y1="16" x2="14" y2="16"></line></svg>
+    </button>
+
+    <!-- Dropdown menu -->
+    <div
+      id="calendar-dropdown"
+      class="hidden absolute top-full left-1/2 -translate-x-1/2 mt-2 min-w-[220px] border border-[#30363d] bg-[#161b22] shadow-xl z-50"
+    >
+      <div class="px-4 py-2.5 border-b border-[#30363d] text-[10px] text-[#8b949e] uppercase tracking-widest font-bold">
+        <span class="lang-ar">{getTranslation("ar", "meeting.addToCalendar")}</span>
+        <span class="lang-en">{getTranslation("en", "meeting.addToCalendar")}</span>
+      </div>
+      <a
+        id="google-calendar-link"
+        href="#"
+        target="_blank"
+        rel="noreferrer"
+        class="flex items-center gap-3 px-4 py-3 text-xs text-[#e6edf3] hover:bg-[#3fb950]/10 hover:text-[#3fb950] transition-colors"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        <span class="lang-ar">{getTranslation("ar", "meeting.googleCalendar")}</span>
+        <span class="lang-en">{getTranslation("en", "meeting.googleCalendar")}</span>
+      </a>
+      <a
+        href="/saacchq-meeting.ics"
+        download="saacchq-meeting.ics"
+        class="flex items-center gap-3 px-4 py-3 text-xs text-[#e6edf3] hover:bg-[#3fb950]/10 hover:text-[#3fb950] transition-colors border-t border-[#30363d]"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        <span class="lang-ar">{getTranslation("ar", "meeting.appleOutlook")}</span>
+        <span class="lang-en">{getTranslation("en", "meeting.appleOutlook")}</span>
+      </a>
+    </div>
   </div>
 </section>
+
+<script>
+  function getNextFriday(): Date {
+    const now = new Date();
+    const dayOfWeek = now.getUTCDay();
+    const daysUntilFriday = (5 - dayOfWeek + 7) % 7 || 7;
+    const nextFriday = new Date(now);
+    nextFriday.setUTCDate(now.getUTCDate() + daysUntilFriday);
+    nextFriday.setUTCHours(17, 30, 0, 0);
+    return nextFriday;
+  }
+
+  function formatGCalDate(date: Date): string {
+    return date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  }
+
+  function buildGoogleCalendarUrl(): string {
+    const start = getNextFriday();
+    const end = new Date(start.getTime() + 60 * 60 * 1000);
+    const params = new URLSearchParams({
+      action: "TEMPLATE",
+      text: "sa/acc Community Meeting",
+      dates: `${formatGCalDate(start)}/${formatGCalDate(end)}`,
+      details: "Weekly sa/acc (Saudi Acceleration) community meeting.\nJoin via Discord: https://discord.gg/Ks4Dpdzkmn",
+      location: "https://discord.gg/Ks4Dpdzkmn",
+      recur: "RRULE:FREQ=WEEKLY;BYDAY=FR",
+      ctz: "Asia/Riyadh",
+    });
+    return `https://calendar.google.com/calendar/render?${params.toString()}`;
+  }
+
+  const googleLink = document.getElementById("google-calendar-link") as HTMLAnchorElement;
+  if (googleLink) {
+    googleLink.href = buildGoogleCalendarUrl();
+  }
+
+  const badge = document.getElementById("calendar-badge");
+  const dropdown = document.getElementById("calendar-dropdown");
+  const wrapper = document.getElementById("calendar-dropdown-wrapper");
+
+  badge?.addEventListener("click", () => {
+    const isOpen = !dropdown?.classList.contains("hidden");
+    dropdown?.classList.toggle("hidden");
+    badge.setAttribute("aria-expanded", String(!isOpen));
+  });
+
+  document.addEventListener("click", (e) => {
+    if (wrapper && !wrapper.contains(e.target as Node)) {
+      dropdown?.classList.add("hidden");
+      badge?.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      dropdown?.classList.add("hidden");
+      badge?.setAttribute("aria-expanded", "false");
+    }
+  });
+</script>
 
 <!-- Manifesto Table -->
 <section class="px-6 max-w-4xl mx-auto mb-24">
