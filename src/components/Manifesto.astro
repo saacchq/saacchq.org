@@ -63,8 +63,7 @@ import { getTranslation } from "@/i18n";
         <span class="lang-en">{getTranslation("en", "meeting.addToCalendar")}</span>
       </div>
       <a
-        id="google-calendar-link"
-        href="#"
+        href="https://calendar.google.com/calendar/embed?src=saacchq%40gmail.com&ctz=Asia%2FRiyadh"
         target="_blank"
         rel="noreferrer"
         class="flex items-center gap-3 px-4 py-3 text-xs text-[#e6edf3] hover:bg-[#3fb950]/10 hover:text-[#3fb950] transition-colors"
@@ -87,40 +86,6 @@ import { getTranslation } from "@/i18n";
 </section>
 
 <script>
-  function getNextFriday(): Date {
-    const now = new Date();
-    const dayOfWeek = now.getUTCDay();
-    const daysUntilFriday = (5 - dayOfWeek + 7) % 7 || 7;
-    const nextFriday = new Date(now);
-    nextFriday.setUTCDate(now.getUTCDate() + daysUntilFriday);
-    nextFriday.setUTCHours(17, 30, 0, 0);
-    return nextFriday;
-  }
-
-  function formatGCalDate(date: Date): string {
-    return date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-  }
-
-  function buildGoogleCalendarUrl(): string {
-    const start = getNextFriday();
-    const end = new Date(start.getTime() + 60 * 60 * 1000);
-    const params = new URLSearchParams({
-      action: "TEMPLATE",
-      text: "sa/acc Community Meeting",
-      dates: `${formatGCalDate(start)}/${formatGCalDate(end)}`,
-      details: "Weekly sa/acc (Saudi Acceleration) community meeting.\nJoin via Discord: https://discord.gg/Ks4Dpdzkmn",
-      location: "https://discord.gg/Ks4Dpdzkmn",
-      recur: "RRULE:FREQ=WEEKLY;BYDAY=FR",
-      ctz: "Asia/Riyadh",
-    });
-    return `https://calendar.google.com/calendar/render?${params.toString()}`;
-  }
-
-  const googleLink = document.getElementById("google-calendar-link") as HTMLAnchorElement;
-  if (googleLink) {
-    googleLink.href = buildGoogleCalendarUrl();
-  }
-
   const badge = document.getElementById("calendar-badge");
   const dropdown = document.getElementById("calendar-dropdown");
   const wrapper = document.getElementById("calendar-dropdown-wrapper");
